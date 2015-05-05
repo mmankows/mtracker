@@ -1,0 +1,43 @@
+<DOCTYPE html>
+<html>
+<head>
+<script>
+
+var start = 0;
+function loadXMLDoc()
+{
+var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+    document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+    }
+  }
+
+var uid = document.getElementById('uid').value;
+var cnt = document.getElementById('cnt').value;
+xmlhttp.open("GET","cgi-bin/display.cgi?uid=" + uid + "&cnt=" + cnt ,true);
+xmlhttp.send();
+start = 1;
+}
+
+</script>
+</head>
+<body>
+<h2>Podaj id i liczbe rekordow do wyswietlenia</h2>
+user_id: <input id="uid" type="text"/> count: <input id="cnt" type="text" value="10"/> 
+<button type="button" onclick="loadXMLDoc()">Go!</button>
+<div id="myDiv"></div>
+
+</body>
+</html>
+
