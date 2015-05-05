@@ -7,6 +7,7 @@ use Data::Dumper;
 use CGI;
 use CGI::Pretty qw/:standard/;
 use DBI;
+use URI::Escape;
 use MIME::Base64 ();
 
 use DBTools;
