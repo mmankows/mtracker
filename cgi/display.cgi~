@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 
+use lib '/home/eaiibgrp/mmankows/mtracker/lib';
 use Data::Dumper;
 use CGI;
 use URI::Escape;
@@ -15,15 +16,15 @@ my $dbh = db_connect();
 my $rh_params = {};
 
 # parse params from query
-##my $query     = CGI->new;
-##$rh_params = parse_params( $query );
+my $query     = CGI->new;
+$rh_params = parse_params( $query );
 
 # save to database
-##my $rah_positions = get_positions( $rh_params->{uid}, $rh_params->{cnt} );
-##$rh_params->{error} = $@ if $@ ; 
+my $rah_positions = get_positions( $rh_params->{uid}, $rh_params->{cnt} );
+$rh_params->{error} = $@ if $@ ; 
 
 print header(-type => "text/html", -status => "200 OK");
-##print_rah( $rah_positions, ['user_id', 'logdate', 'step_id', 'lattitude', 'longitude'] );
+print_rah( $rah_positions, ['user_id', 'logdate', 'step_id', 'lattitude', 'longitude'] );
 
 #### #### #### #### #### #### #### ##### ##### ##### ########
 #### #### #### #### #### #### #### ##### ##### ##### ########

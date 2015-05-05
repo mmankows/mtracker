@@ -1,7 +1,8 @@
-#!/home/eaiibgrp/mmankows/perl5/perlbrew/perls/perl-5.10.0/bin/perl -I ~/perl5/lib/perl5 -I~/mtracker/lib
+#!/home/eaiibgrp/mmankows/perl5/perlbrew/perls/perl-5.10.0/bin/perl -I ~/perl5/lib/perl5
 use strict;
 use warnings;
 
+use lib '/home/eaiibgrp/mmankows/mtracker/lib';
 use Data::Dumper;
 use CGI;
 use URI::Escape;
@@ -9,8 +10,10 @@ use CGI::Pretty qw/:standard/;
 use DBI;
 use JSON::XS;
 
+use DBTools;
+
 # initialize database connection
-my $dbh = db_connect();
+my $dbh = DBTools::db_connect();
 
 my $rh_params = {};
 
@@ -27,21 +30,6 @@ print_rah( $rah_positions, ['user_id', 'logdate', 'step_id', 'lattitude', 'longi
 
 #### #### #### #### #### #### #### ##### ##### ##### ########
 #### #### #### #### #### #### #### ##### ##### ##### ########
-
-# connect to database 
-sub db_connect {
-	my %params = shift ||  (
-		host => 'data.uci.agh.edu.pl',
-		user => 'mmankow1',
-		pass => 'xn4HsR7f',
-		db   => 'mmankow1',
-	);
-
-	my $conn_str = sprintf("DBI:mysql:database=%s;host=%s", $params{db}, $params{host} );
-	$dbh         = DBI->connect($conn_str,$params{user}, $params{pass}, { RaiseError => 1 } ) or die(DBI->errstr);
-
-	return $dbh;
-}
 
 # parse query parameters
 sub parse_params {

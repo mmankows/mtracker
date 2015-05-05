@@ -1,6 +1,8 @@
 package DBTools;
-use strict;
-use warnings;
+
+
+
+
 
 
 # Connect to database 

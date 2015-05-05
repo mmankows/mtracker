@@ -1,32 +1,34 @@
-#!/home/mmankows/perl5/perlbrew/perls/perl-5.10.0/bin/perl -I ~/perl5/lib/perl5
+#!/home/eaiibgrp/mmankows/perl5/perlbrew/perls/perl-5.10.0/bin/perl -I ~/perl5/lib/perl5 
 use strict;
 use warnings;
 
+use lib '/home/eaiibgrp/mmankows/mtracker/lib';
 use Data::Dumper;
 use CGI;
 use CGI::Pretty qw/:standard/;
 use DBI;
 use MIME::Base64 ();
 
+use DBTools;
 # -d_id(string)    : device id
 # -cs (string md5) : control sum
 # -lat (base 65 float)
 # -lon (base64 float)
 
 # initialize database connection
-my $dbh = db_connect();
+my $dbh = DBTools::db_connect();
 
 my $rh_params = {};
 eval {
-# parse params from query
-my $query     = CGI->new;
-$rh_params = parse_params( $query );
+    # parse params from query
+    my $query     = CGI->new;
+    $rh_params = parse_params( $query );
 
-# validate parameters
-my $valid = validate_params( $rh_params );
+    # validate parameters
+    my $valid = validate_params( $rh_params );
 
-# save to database
-save_params($rh_params, 'tracked_routes') if $valid;
+    # save to database
+    save_params($rh_params, 'tracked_routes') if $valid;
 };
 $rh_params->{error} = $@ if $@ ; 
 
@@ -70,21 +72,6 @@ print qq|
 #### #### #### #### #### #### #### ##### ##### ##### ########
 #### #### #### #### #### #### #### ##### ##### ##### ########
 #### #### #### #### #### #### #### ##### ##### ##### ########
-
-# connect to database 
-sub db_connect {
-	my %params = shift ||  (
-		host => 'data.uci.agh.edu.pl',
-		user => 'mmankow1',
-		pass => 'xn4HsR7f',
-		db   => 'mmankow1',
-	);
-
-	my $conn_str = sprintf("DBI:mysql:database=%s;host=%s", $params{db}, $params{host} );
-	$dbh         = DBI->connect($conn_str,$params{user}, $params{pass}, { RaiseError => 1 } ) or die(DBI->errstr);
-
-	return $dbh;
-}
 
 # parse query parameters
 sub parse_params {
