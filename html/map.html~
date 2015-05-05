@@ -93,7 +93,7 @@
 </script>
 </head>
 	<body>
-		<h2>Podaj id i liczbę makrkerow do dodania</h2>
+		<h2>Podaj id i liczbe makrkerow do dodania</h2>
 		
 		<div id="controls">
 			user_id: <input id="uid" type="text"/> 

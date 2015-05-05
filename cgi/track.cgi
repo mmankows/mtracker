@@ -7,6 +7,7 @@ use Data::Dumper;
 use CGI;
 use CGI::Pretty qw/:standard/;
 use DBI;
+use URI::Escape;
 use MIME::Base64 ();
 
 use DBTools;
@@ -54,7 +55,7 @@ print qq|
 			<ul>
 				<li><b>d_id(String)</b> - Device id</li>
 				<li><b>lon(base64encoded float)</b> - Longitude</li>
-				<li><b>lat(base64encoded float)</b> - Lattitude</li>
+				<li><b>lat(base64encoded float)</b> - Latitude</li>
 
 			</ul>
 			<h4>Example request</h4>
@@ -81,8 +82,8 @@ sub parse_params {
 	$rh_params->{device_id}  = uri_unescape $query->param('d_id'); 
 	$rh_params->{user_id}    = did2uid( delete $rh_params->{device_id} );
 	
-	$rh_params->{lattitude}  = uri_unescape $query->param('lat');
-	$rh_params->{lattitude}  = MIME::Base64::decode( $rh_params->{lattitude} );
+	$rh_params->{latitude}  = uri_unescape $query->param('lat');
+	$rh_params->{latitude}  = MIME::Base64::decode( $rh_params->{latitude} );
 	
 	$rh_params->{longitude}  = uri_unescape $query->param('lon');
 	$rh_params->{longitude}  = MIME::Base64::decode( $rh_params->{longitude} );
@@ -104,7 +105,7 @@ sub save_params {
 sub validate_params {
 	my ($rh_params) = shift;
 	
-	if ( grep { not $rh_params->{$_} } qw/lattitude longitude user_id/ ) {
+	if ( grep { not $rh_params->{$_} } qw/latitude longitude user_id/ ) {
 		return undef;
 	}
 
