@@ -1,0 +1,1 @@
+mysql -ummankow1 -Dmmankow1 -pxn4HsR7f -hdata.uci.agh.edu.pl
