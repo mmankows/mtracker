@@ -14,12 +14,13 @@ use DBTools;
 
 
 
-my $query     = CGI->new;
+my $query = CGI->new;
 
 if( $query->request_method eq 'POST') {
     eval { 
         my $json = $query->param('POSTDATA');
         $json    = decode_json( $json )
+        die "Wrong JSON format" if grep { not $json->{ $_ } } qw/user pass did cs/;
     };
     if ( $@ ) {
         print header(-type => "text/html", -status => "500");
