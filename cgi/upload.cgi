@@ -13,12 +13,29 @@ $CGI::POST_MAX = 1024 * 5000;
 my $upload_dir = "/home/eaiibgrp/mmankows/mtracker";
 
 my $rh_params;
+my $query;
 eval { 
-    my $query     = CGI->new;
+    $query     = CGI->new;
     $rh_params = parse_params( $query );
 
 };
 $rh_params->{error} = $@ if $@ ; 
+
+if( $rh_params->{filename} and
+    $rh_params->{pass} and
+    $rh_params->{pass} eq 'dziwko1234' ) {
+
+      open (OUTFILE, ">", "$upload_dir/apka") 
+              or die "Couldn't open for writing: $!";
+      my $numbytes = 1024;
+      my $buffer;
+      while (my $bytesread = read($rh_params->{filename}, $buffer, $numbytes)) {
+	      print OUTFILE $buffer;
+     } 
+     close OUTFILE;
+    
+}    
+
 
 print header(-type => "text/html", -status => "200 OK");
 
@@ -27,15 +44,17 @@ debug($rh_params);
 
 sub debug {
 print Dumper $rh_params;
+print Dumper $query;
 
 print qq|
 	<html>
 		<body>
 			<h1>Upload newest version of app</h1>
 			<form method="POST" enctype="multipart/form-data">
-			 <input type="file"      id="file">
-			 <input type="password" id="pass">
+			 <input type="file"      name="file">
+			 <input type="password"  name="pass">
 			 <input type="submit" value="Upload" name="submit">
+			 <a href="../apka">Pobierz aplikacje!</a>
 		</body>
 	</html>
 |;
@@ -49,7 +68,8 @@ sub parse_params {
 	my ( $query ) = shift;
 	my $rh_params = {};
 	
-	$rh_params->{file}       = $query->param('file'); 
-	$rh_params->{lattitude}  = $query->param('pass');
+	$rh_params->{fileame}       = $query->param('file'); 
+	$rh_params->{fh}            = $query->upload('file'); 
+	$rh_params->{pass}          = $query->param('pass');
 	return $rh_params;
 }

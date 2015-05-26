@@ -1,9 +1,10 @@
 package DBTools;
+use strict;
+use warnings;
 
-
-
-
-
+use DBI;
+use Digest::MD5;
+use Data::Dumper;
 
 # Connect to database 
 sub db_connect {
@@ -20,5 +21,26 @@ sub db_connect {
 	return $dbh;
 }
 
+#Fetch all information related to user
+sub get_user {
+	my %P = @_;
+
+	my $dbh = db_connect();
+	my $sql = 'SELECT * FROM users WHERE device_id = ?';
+
+	return $dbh->selectrow_hashref($sql, {}, $P{ device_id } );
+}
+
+#Save user to database
+sub save_user {
+	my %P = @_;
+	
+	my $dbh = db_connect();
+	my $sql = 'INSERT INTO users (login, pass, token, device_id) VALUES (?,?,?,?)';
+	
+	print Dumper \%P;
+	return $dbh->do($sql, undef, $P{login}, Digest::MD5::md5_hex( $P{pass} ), $P{token}, $P{device_id} );
+}
+	
 
 1;

@@ -17,7 +17,6 @@ my $query = CGI->new;
 
 if( $query->request_method eq 'POST') {
     
-    # Process registration request
     eval { 
         
 	$json_req = $query->param('POSTDATA');
@@ -40,9 +39,7 @@ if( $query->request_method eq 'POST') {
 	DBTools::save_user( device_id => $json_req->{did}, login => $json_req->{login}, pass => $json_req->{pass}, token => $json_resp->{token} );
 	$json_resp->{status} = "OK";
     	print header(-type => "application/json", -status => "200 OK" );
-    } 
-    # Some problems encountered
-    else {
+    } else {
     	print header(-type => "application/json", -status => "500 ERROR" );
     }
     
