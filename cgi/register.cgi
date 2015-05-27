@@ -9,6 +9,7 @@ use CGI::Pretty qw/:standard/;
 
 use Encoding;
 use DBTools;
+use User;
 
 
 my $json_req;	
@@ -25,11 +26,11 @@ if( $query->request_method eq 'POST') {
 	$json_req = decode_json( $json_req );
 	
 	# wrong json format
-	$json_resp->{ status } = "ERR: INVALID JSON",  die "\n" if not $json_req || grep { not $json_req->{ $_ } } qw/login pass did cs/;
+	die "ERR: INVALID JSON\n"       if not $json_req || grep { not $json_req->{ $_ } } qw/login pass did cs/;
 	# already has such device id
-	$json_resp->{ status } = "ERR: ALREADY EXISTS",die "\n" if DBTools::get_user( device_id => $json_req->{did} );
+	die "ERR: ALREADY EXISTS\n"     if User::get_user( device_id => $json_req->{did} );
 	# wrong control sum (mallicious user?)
-	$json_resp->{ status } = "ERR: WRONG PARAMS",  die "\n" if not Encoding::validate_cs( %$json_req );
+	die "ERR: WRONG PARAMS\n"       if not Encoding::validate_cs( %$json_req );
 
 	$json_resp->{ token }  = Encoding::gen_token( %$json_req ); 
 
@@ -37,13 +38,14 @@ if( $query->request_method eq 'POST') {
 
     # Validation is fine
     if ( not $@ ) {
-	DBTools::save_user( device_id => $json_req->{did}, login => $json_req->{login}, pass => $json_req->{pass}, token => $json_resp->{token} );
+	User::save_user( device_id => $json_req->{did}, login => $json_req->{login}, pass => $json_req->{pass}, token => $json_resp->{token} );
 	$json_resp->{status} = "OK";
     	print header(-type => "application/json", -status => "200 OK" );
     } 
     # Some problems encountered
     else {
     	print header(-type => "application/json", -status => "500 ERROR" );
+	$json_resp->{status} = $@;
     }
     
     print encode_json( $json_resp );

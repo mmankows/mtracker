@@ -21,24 +21,14 @@ sub db_connect {
 	return $dbh;
 }
 
-#Fetch all information related to user
-sub get_user {
-	my %P = @_;
-
+sub save_params {
+	my ($rh_params, $table_name) = @_;
+	return {} if not keys %$rh_params;
+	my $query = sprintf("INSERT INTO %s (%s) VALUES (%s)",$table_name, join(',',keys %$rh_params), join(',',map { '?' } values %$rh_params));
 	my $dbh = db_connect();
-	my $sql = 'SELECT * FROM users WHERE device_id = ?';
-
-	return $dbh->selectrow_hashref($sql, {}, $P{ device_id } );
-}
-
-#Save user to database
-sub save_user {
-	my %P = @_;
+	my $sth = $dbh->prepare($query);
+	$sth->execute(values %$rh_params);
 	
-	my $dbh = db_connect();
-	my $sql = 'INSERT INTO users (login, pass, token, device_id) VALUES (?,?,?,?)';
-	
-	return $dbh->do($sql, undef, $P{login}, Digest::MD5::md5_hex( $P{pass} ), $P{token}, $P{device_id} );
 }
 	
 
