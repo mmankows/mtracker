@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+	  <title>.:: mTracker - Śledź on-line urządzenie mobilne z użyciem GPS ::.</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" >
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <style>
+      html, body, #map-canvas {
+        height:  500px;
+        width:   100%;
+        margin:  0px;
+        padding: 0px;
+      }
+    </style>
+    <script src="http://maps.google.com/maps/api/js?sensor=false&v=3&libraries=geometry"></script>
+    <script src="../js/map.js"></script>
+    <script src="../js/common.js"></script>
+  </head>
+  <body>
+	<div id="controls">
+		<table>
+			<tr>
+				<td>
+					tryb
+				</td>
+				<td>
+					ostatnie pozycje
+				</td>
+				<td>
+					od
+				</td>
+				<td>
+					do
+				</td>
+				<td>
+				</td>
+				<td>
+				</td>
+				</td> 
+			<tr>
+				<td>
+					<select id="disp_type"> 
+						<option value="MARKER" > Znaczniki </option>
+						<option value="ROUTE" > Trasa </option>
+					</select>
+				</td>
+				<td>
+					<input  id="cnt"   type="text" value="10"     size="20" onclick="this.value=''" /> 
+				</td>
+				<td>
+					<input  id="begin" type="text" maxlength="19" size="20" />
+				</td>
+				<td>			
+					<input  id="end"   type="text" maxlength="19" size="19" />
+				</td>
+				<td>
+					<button type="button" size="10" onclick="addMarkers()">Pokaż!</button>
+				</td>
+				<td>
+					<a id="log" href="cgi/auth.cgi?logout=1">Wyloguj</a>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div id="map-canvas">
+	</div>
+
+	<div id="stats">
+	</div>
+  </body>
+</html>
