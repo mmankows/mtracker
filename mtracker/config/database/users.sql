@@ -6,5 +6,7 @@ CREATE TABLE `users` (
 	  `login` char(30) NOT NULL,
 	  `pass` char(32) NOT NULL,
 	  `token` char(32) NOT NULL,
-	  PRIMARY KEY  (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2003 DEFAULT CHARSET=latin2;
+	  PRIMARY KEY  (`user_id`),
+	  UNIQUE (`device_id`),
+	  UNIQUE (`login`)
+);

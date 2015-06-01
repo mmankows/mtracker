@@ -9,13 +9,13 @@ window.onload = function () {
 	if( getCookie('token') == undefined || getCookie('uid') == undefined ) {
 		var login_el = document.getElementById('log');
 		alert("musisz się zalogować!");
-		window.location    = "cgi/auth.cgi";
+		window.location    = "../cgi/auth.cgi";
 	}
 
 	// prepare datetime fields
 	var today = new Date();
 	var month = today.getMonth() + 1; month = month > 9 ? month : "0" + month;
-	var day   = today.getDate()  + 1; day   = day   > 9 ? day   : "0" + day;
+	var day   = today.getDate();      day   = day   > 9 ? day   : "0" + day;
 
 	var today_date =  today.getFullYear() + "-" + month + "-" + day;
 	document.getElementById('begin').value = today_date + " 00:00:00";
@@ -29,7 +29,7 @@ function initialize() {
     markerCount = 0;
     totalDistance = 0;
 
-    var myLatlng = new google.maps.LatLng(0, 0);
+    var myLatlng = new google.maps.LatLng(50, 20);
     var map_canvas = document.getElementById('map-canvas');
     var map_options = {
 	center: myLatlng,
@@ -81,12 +81,18 @@ if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
 
 
 xmlhttp.onreadystatechange=function() {
-	// reload map
-	initialize();
 
 	if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-	    var Coords = JSON.parse(xmlhttp.responseText);
-
+	    var Coords = JSON.parse(xmlhttp.responseText) || [];
+	    
+	    // do nothing if no markers to add
+	    if( Coords.length == 0 ) {
+		alert("No positions to display in given time range. Specify another time range");
+	    	return false;
+	    }
+	    
+	    // reload map
+	    initialize();
             for ( var i=0; i<Coords.length; i++ ) {
 		LatLngCoords[i] = new google.maps.LatLng(Coords[i].latitude, Coords[i].longitude);
 		if( i > 0 ) {
@@ -126,11 +132,12 @@ xmlhttp.onreadystatechange=function() {
 	    map.fitBounds(latlngbounds); 
 	
 	    // generate statistics
+	    document.getElementById('modal_button').disabled = false;
 	    var stats_el = document.getElementById('stats');
 	    stats_el.innerHTML = "<b>długość trasy: </b>" + Math.round( totalDistance )+ " (m)<br>" +
-	    			 "<b>liczba punktów: </b>" + markerCount + "<br>" +  
-	    		         "<b>początek trasy: </b>" + Coords[markerCount-1].logdate + "<br>" +
-				 "<b>koniec trasy    </b>" + Coords[0].logdate + "<br>";
+	    			 "<b>liczba punktów: </b>" + Coords.length + "<br>" +  
+	    		         "<b>początek trasy: </b>" + Coords[Coords.length-1].logdate + "<br>" +
+				 "<b>koniec trasy:   </b>" + Coords[0].logdate + "<br>";
 	}	
 }
 
@@ -167,7 +174,7 @@ xmlhttp.onreadystatechange=function() {
 
             
 	if( valid == true && disp_type ) {
-		xmlhttp.open("GET","cgi/display.cgi?" 
+		xmlhttp.open("GET","../cgi/display.cgi?" 
 				+  "uid="   + uid 
 				+ "&t="     + token
 				+ "&cnt="   + cnt 
@@ -180,3 +187,8 @@ xmlhttp.onreadystatechange=function() {
 	}
 
 }
+$(function(){
+	$('#begin, #end').datetimepicker({
+		format: 'YYYY-MM-DD HH:mm:ss'
+	});
+});

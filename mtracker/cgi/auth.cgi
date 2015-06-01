@@ -54,15 +54,26 @@ if( $query->request_method() eq 'POST' ) {
 } else {
 	# log out - make cookie outdated
 	my $new_cookie = [];
+	my %cookie = CGI::Cookie->fetch;
+	
 	if( $query->param('logout') == 1 ) {
-	    	my %cookie = CGI::Cookie->fetch;
+		# Logged in, logout request - make cookie outdated to logout 
 		push @$new_cookie, CGI::Cookie->new(-name => 'token', -value => $cookie{ token }{value}, -expires=>'0');
 		push @$new_cookie, CGI::Cookie->new(-name => 'uid',   -value => $cookie{ uid }{value},   -expires=>'0' );
+
+	} elsif( $cookie{token}{value} && $cookie{uid}{value}  ) {
+		# Logged in - redirect directly to map if has valid cookie
+		print $query->redirect( -url => '../html/map.html' );
 	}
 
         print header(-type => "text/html", -status => "200 OK", -cookie => $new_cookie);
         print q{
+	<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 	<html>
+	<head>
+		<title> Zaloguj się </title>
+    		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" >
+	</head>
 	<body>
 		<form action="auth.cgi" method="POST">
 			Podaj login: 
