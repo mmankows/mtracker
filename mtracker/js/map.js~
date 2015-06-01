@@ -142,8 +142,8 @@ xmlhttp.onreadystatechange=function() {
 				 "<b>koniec trasy:   </b>" + Coords[0].logdate + "<br>";
 	
 	    // adjust for selected range
-	    document.getElementById('begin').value = Coords[Coords.length-1].logdate;
-	    document.getElementById('end').value = Coords[0].logdate;
+	    document.getElementById('begin').value;
+	    document.getElementById('end').value;
 	}	
 }
 
