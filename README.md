@@ -1,3 +1,1 @@
-# mtracker
-
-v 1.0
+# GPS based tracking system with basic statistics (University Project)
